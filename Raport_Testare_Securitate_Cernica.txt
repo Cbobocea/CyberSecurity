@@ -1,0 +1,44 @@
+
+Raport de Testare de Securitate: https://cernica.informare.ro
+
+1. Colectare de Informații
+- Stack Tehnologic: WordPress CMS (versiunea 6.8) - Identificat prin analiza sursei paginii și comportamentului site-ului.
+- Server: Protecție Cloudflare (proxy reverse) - Ascunde IP-ul real al serverului, oferă protecție WAF de bază.
+- SSL/HTTPS: Site-ul folosește HTTPS - Protejează datele în tranzit.
+
+2. Expunerea Informațiilor Sensibile
+- Expunere CNP (Cod Numeric Personal) și serii CI: Informații personale accesibile publicului - Încălcare critică GDPR; necesită remediere urgentă.
+
+3. Descoperire de Directoare și Fisiere
+- Căi /wp-login.php și /admin: Pagina de autentificare este publică - /admin redirecționează către /wp-login.php cu parametri de reautentificare.
+- Comportament câmp parolă: Inițial câmpul de parolă este dezactivat - Protecție slabă, realizată doar la nivel frontend.
+- Bypass câmp parolă: Câmpul de parolă poate fi reactivat cu navigare simplă - Lipsă de validare la nivel server.
+
+4. Scanare de Vulnerabilități (Nikto)
+- Headere HTTP: Lipsă header X-Frame-Options - Protecția împotriva clickjacking-ului este absentă.
+- Căi administrative ghicite: /admin/, /admin/install/phpinfo.php (neconfirmate) - Nikto a sugerat căi, dar răspunsurile sunt 400 Bad Request.
+- Lipsă de CGI-uri vulnerabile: Nu au fost găsite scripturi expuse ușor de exploatat.
+
+Observații Cheie de Securitate
+- Protecția câmpului de parolă este realizată exclusiv la nivel de frontend și poate fi ocolită ușor.
+- Căile /admin și /wp-login.php sunt disponibile publicului, expunând portalul de autentificare WordPress.
+- Nu a fost detectată nicio măsură suplimentară de autentificare (ex: CAPTCHA, 2FA).
+- Date sensibile (CNP și serii CI) sunt expuse public, ceea ce reprezintă un risc major de amendă conform GDPR.
+
+Recomandări
+- Date Sensibile: Eliminarea imediată a CNP-urilor și seriilor CI din zonele publice.
+- Securitate Login: Implementarea autentificării în doi pași (2FA), CAPTCHA și blocarea conturilor după un număr de încercări eșuate.
+- Acces Administrativ: Ascunderea sau mutarea paginii /wp-login.php; restricționarea accesului la IP-uri autorizate.
+- Headere HTTP: Adăugarea header-ului X-Frame-Options: SAMEORIGIN pentru prevenirea atacurilor de tip clickjacking.
+- Întărirea Serverului: Monitorizarea tentativelor automate de autentificare și implementarea limitării numărului de încercări.
+
+
+
+------------------------------------------------------------
+Acest raport a fost realizat în cadrul unui test de securitate autorizat. 
+Nu au fost efectuate exploatări sau tentative de accesare neautorizată a sistemelor. 
+Toate observațiile sunt menționate în scop de îmbunătățire a securității site-ului.
+
+Data: 29 Aprilie 2025
+Semnat: [Bobocea Cristian]
+["Testare Etică de Securitate"]
